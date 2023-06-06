@@ -10,14 +10,22 @@ jobs:
     steps:
       - name: Download
         run:  Invoke-WebRequest https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-windows-amd64.zip -OutFile ngrok.zip
+        shell:  pwsh
       - name: Extract
         run:  Expand-Archive ngrok.zip
+        shell:  pwsh
       - name: Auth
         run:  .\ngrok\ngrok.exe authtoken ${{ secrets.NGROK_AUTH_TOKEN }}
+        shell:  pwsh
       - name: Enable TS
         run:  Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -name "fDenyTSConnections" -Value 0
+        shell:  pwsh
       - run:  Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
+        shell:  pwsh
       - run:  Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -name "UserAuthentication" -Value 1
+        shell:  pwsh
       - run:  Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "P@ssw0rd!" -Force)
+        shell:  pwsh
       - name: Create Tunnel
         run:  .\ngrok\ngrok.exe tcp 3389
+        shell:  pwsh
