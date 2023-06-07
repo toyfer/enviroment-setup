@@ -27,8 +27,6 @@ jobs:
       - run:  Set-WinHomeLocation 122
       - run:  Set-WinSystemLocale -SystemLocale ja-JP	
       - run:  Set-WinUILanguageOverride -Language ja-JP
-      - run:  Set-ItemProperty "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Keyboard Layouts\00000411" -name "Layout File" -value "kbd106.dll"
         
-      - name: Create Tunnel
-        run:  .\ngrok\ngrok.exe http 8080
-      # run:  .\ngrok\ngrok.exe tcp 3389
+      - name: Create Tun
+      - run:  .\ngrok\ngrok.exe tcp 3389
