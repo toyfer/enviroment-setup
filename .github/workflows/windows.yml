@@ -27,7 +27,7 @@ jobs:
       - run:  Set-WinHomeLocation 122
       - run:  Set-WinSystemLocale -SystemLocale ja-JP	
       - run:  Set-WinUILanguageOverride -Language ja-JP
-      - run:  SetItemProperty "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Keyboard Layouts\00000411" -name "Layout File" -value "kbd106.dll"
+      # run:  SetItemProperty "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Keyboard Layouts\00000411" -name "Layout File" -value "kbd106.dll"
         
       - name: Create Tunnel
         run:  .\ngrok\ngrok.exe -region=jp tcp 3389
