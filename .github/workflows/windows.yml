@@ -30,4 +30,4 @@ jobs:
       # run:  SetItemProperty "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Keyboard Layouts\00000411" -name "Layout File" -value "kbd106.dll"
         
       - name: Create Tunnel
-        run:  .\ngrok\ngrok.exe -region=jp tcp 3389
+        run:  .\ngrok\ngrok.exe -region=ap tcp 3389
