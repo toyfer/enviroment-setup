@@ -20,5 +20,14 @@ jobs:
       - run:  Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
       - run:  Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -name "UserAuthentication" -Value 1
       - run:  Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "P@ssw0rd!" -Force)
+      - name: UserSetting
+        run:  tzutil.exe /s "Tokyo Standard Time"
+        run:  Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -name "HideFileExt" -Value 0
+        run:  Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -name "Hidden" -Value 1
+        run:  Set-WinHomeLocation 122
+        run:  Set-WinSystemLocale -SystemLocale ja-JP	
+        run:  Set-WinUILanguageOverride -Language ja-JP
+        run:  SetItemProperty "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Keyboard Layouts\00000411" -name "Layout File" -value "kbd106.dll"
+        
       - name: Create Tunnel
         run:  .\ngrok\ngrok.exe -region=jp tcp 3389
