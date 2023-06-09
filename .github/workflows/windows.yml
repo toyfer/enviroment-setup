@@ -31,8 +31,8 @@ jobs:
         run:  Install-WindowsFeature -Name RDS-RD-Server -IncludeManagementTools
       - run:  Install-WindowsFeature -Name RDS-Web-Access
       - run:  Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name 'AutoAdminLogon' -Value '1'
-      - run:  Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name 'DefaultUserName' -Value 'ユーザ名'
-      - run:  Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name 'DefaultPassword' -Value 'パスワード'
+      - run:  Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name 'DefaultUserName' -Value 'runneradmin'
+      - run:  Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name 'DefaultPassword' -Value 'P@ssw0rd!'
 
       # run:  Set-RDWebClientAccess -ClientAuthenticationMethod Basic -AllowWebContentCaching $true
       
