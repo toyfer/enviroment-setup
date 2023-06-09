@@ -26,6 +26,11 @@ jobs:
       - run:  Set-WinHomeLocation 122
       - run:  Set-WinSystemLocale -SystemLocale ja-JP	
       - run:  Set-WinUILanguageOverride -Language ja-JP
-        
+      
+      - name: experience run
+        run:  Install-WindowsFeature -Name RDS-RD-Server -IncludeManagementTools
+      - run:  Install-WindowsFeature -Name RDS-Web-Access
+      - run:  Set-RDWebClientAccess -ClientAuthenticationMethod Basic -AllowWebContentCaching $true
+      
       - name: Create Tun
         run:  .\ngrok\ngrok.exe tcp --region jp 3389
