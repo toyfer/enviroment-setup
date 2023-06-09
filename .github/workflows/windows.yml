@@ -41,4 +41,6 @@ jobs:
         # Install-Module -Name RDWebClientManagement -Force
         # Install-RDWebClientPackage
       - name: Create Tunnel
-        run:  .\ngrok\ngrok.exe tcp --region jp 3389
+        run:  |
+          start .\ngrok\ngrok.exe tcp --region jp 3389
+          ping 127.0.0.1 /t
