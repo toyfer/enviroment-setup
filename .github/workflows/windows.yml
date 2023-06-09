@@ -29,8 +29,8 @@ jobs:
       
       - name: experience run
         run:  Install-WindowsFeature Remote-Desktop-Services,RDS-Web-Access,RDS-RD-Server,RDS-Connection-Broker,RDS-Licensing -IncludeManagementTools
-      - run:  Install-Module -Name RDWebClientManagement
-      - run:  Install-RDWebClientPackage
+      - run:  Install-Module -Name RDWebClientManagement -Force
+      # - run:  Install-RDWebClientPackage
       - run:  Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name 'AutoAdminLogon' -Value '1'
       - run:  Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name 'DefaultUserName' -Value 'runneradmin'
       - run:  Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name 'DefaultPassword' -Value 'P@ssw0rd!'
