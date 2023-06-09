@@ -28,13 +28,15 @@ jobs:
       - run:  Set-WinUILanguageOverride -Language ja-JP
       
       - name: experience run
-        run:  Install-WindowsFeature Remote-Desktop-Services,RDS-Web-Access,RDS-RD-Server,RDS-Connection-Broker,RDS-Licensing -IncludeManagementTools 
+        run:  Install-WindowsFeature Remote-Desktop-Services,RDS-Web-Access,RDS-RD-Server,RDS-Connection-Broker,RDS-Licensing -IncludeManagementTools
+      - run:  Install-Module -Name RDWebClientManagement
+      - run:  Install-RDWebClientPackage
       - run:  Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name 'AutoAdminLogon' -Value '1'
       - run:  Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name 'DefaultUserName' -Value 'runneradmin'
       - run:  Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name 'DefaultPassword' -Value 'P@ssw0rd!'
       - run:  Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name 'AutoLogonCount' -Value '1'
 
-
+      - run: 'ngrok tcp --region jp 3389' | Out-File -FilePath "$env:APPDATA\Microsoft\Windows\Start Menu\Programs\Startup\ngrok_startup.bat" -Encoding ASCII
       # run:  Set-RDWebClientAccess -ClientAuthenticationMethod Basic -AllowWebContentCaching $true
       
       - name: Create Tun
