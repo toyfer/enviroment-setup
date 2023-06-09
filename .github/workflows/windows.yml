@@ -28,8 +28,7 @@ jobs:
       - run:  Set-WinUILanguageOverride -Language ja-JP
       
       - name: experience run
-        run:  Install-WindowsFeature -Name RDS-RD-Server -IncludeManagementTools
-      - run:  Install-WindowsFeature -Name RDS-Web-Access
+        run:  Install-WindowsFeature Remote-Desktop-Services,RDS-Web-Access,RDS-RD-Server,RDS-Connection-Broker,RDS-Licensing -IncludeManagementTools 
       - run:  Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name 'AutoAdminLogon' -Value '1'
       - run:  Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name 'DefaultUserName' -Value 'runneradmin'
       - run:  Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name 'DefaultPassword' -Value 'P@ssw0rd!'
