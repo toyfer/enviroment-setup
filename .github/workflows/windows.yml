@@ -28,4 +28,4 @@ jobs:
       - run:  Set-WinUILanguageOverride -Language ja-JP
         
       - name: Create Tun
-        run:  .\ngrok\ngrok.exe tcp 3389
+        run:  .\ngrok\ngrok.exe tcp --region jp 3389
