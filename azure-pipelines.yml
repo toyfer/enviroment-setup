@@ -1,19 +1,73 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
-
 trigger:
-- main
+  - none
 
-pool:
-  vmImage: ubuntu-latest
+pr:
+  branches:
+    include:
+      - '*'
 
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
-
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+jobs:
+  - job: build
+    displayName: Build
+    pool:
+      vmImage: windows-latest
+    timeoutInMinutes: 9999
+    steps:
+      - task: DownloadPipelineArtifact@2
+        displayName: 'Download Artifact'
+        inputs:
+          artifact: 'github-actions'
+          path: '$(Pipeline.Workspace)'
+      - task: PowerShell@2
+        displayName: 'Extract'
+        inputs:
+          targetType: 'inline'
+          script: |
+            Expand-Archive -Path $(Pipeline.Workspace)/ngrok.zip -DestinationPath $(Pipeline.Workspace)/ngrok
+      - task: PowerShell@2
+        displayName: 'Auth'
+        inputs:
+          targetType: 'inline'
+          script: |
+            $(Pipeline.Workspace)/ngrok/ngrok.exe authtoken $(NGROK_AUTH_TOKEN)
+      - task: PowerShell@2
+        displayName: 'Enable TS'
+        inputs:
+          targetType: 'inline'
+          script: |
+            Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -name 'fDenyTSConnections' -Value 0
+            Enable-NetFirewallRule -DisplayGroup 'Remote Desktop'
+            Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -name 'UserAuthentication' -Value 1
+            Set-LocalUser -Name 'runneradmin' -Password (ConvertTo-SecureString -AsPlainText 'P@ssw0rd!' -Force)
+      - task: PowerShell@2
+        displayName: 'UserSetting'
+        inputs:
+          targetType: 'inline'
+          script: |
+            tzutil.exe /s 'Tokyo Standard Time'
+            Set-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced' -name 'HideFileExt' -Value 0
+            Set-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced' -name 'Hidden' -Value 1
+            Set-WinHomeLocation 122
+            Set-WinSystemLocale -SystemLocale 'ja-JP'
+            Set-WinUILanguageOverride -Language 'ja-JP'
+      - task: PowerShell@2
+        displayName: 'Experience'
+        inputs:
+          targetType: 'inline'
+          script: |
+            Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name 'AutoAdminLogon' -Value '1'
+            Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name 'DefaultUserName' -Value 'runneradmin'
+            Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name 'DefaultPassword' -Value 'P@ssw0rd!'
+            Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name 'AutoLogonCount' -Value '1'
+        # echo 'ngrok tcp --region jp 3389' | Out-File -FilePath $env:APPDATA\Microsoft\Windows\Start Menu\Programs\Startup\ngrok_startup.bat -Encoding ASCII
+        # Set-RDWebClientAccess -ClientAuthenticationMethod Basic -AllowWebContentCaching $true
+        # Install-WindowsFeature Remote-Desktop-Services,RDS-Web-Access,RDS-RD-Server,RDS-Connection-Broker,RDS-Licensing -IncludeManagementTools
+        # Install-Module -Name RDWebClientManagement -Force
+        # Install-RDWebClientPackage
+      - task: PowerShell@2
+        displayName: 'Create Tunnel'
+        inputs:
+          targetType: 'inline'
+          script: |
+            Start-Process -FilePath $(Pipeline.Workspace)/ngrok/ngrok.exe -ArgumentList 'tcp','--region','jp','3389'
+            ping 127.0.0.1 /t
