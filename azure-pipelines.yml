@@ -59,11 +59,6 @@ jobs:
             Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name 'DefaultUserName' -Value 'runneradmin'
             Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name 'DefaultPassword' -Value 'P@ssw0rd!'
             Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name 'AutoLogonCount' -Value '1'
-        # echo 'ngrok tcp --region jp 3389' | Out-File -FilePath $env:APPDATA\Microsoft\Windows\Start Menu\Programs\Startup\ngrok_startup.bat -Encoding ASCII
-        # Set-RDWebClientAccess -ClientAuthenticationMethod Basic -AllowWebContentCaching $true
-        # Install-WindowsFeature Remote-Desktop-Services,RDS-Web-Access,RDS-RD-Server,RDS-Connection-Broker,RDS-Licensing -IncludeManagementTools
-        # Install-Module -Name RDWebClientManagement -Force
-        # Install-RDWebClientPackage
       - task: PowerShell@2
         displayName: 'Create Tunnel'
         inputs:
