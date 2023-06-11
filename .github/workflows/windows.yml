@@ -47,7 +47,7 @@ jobs:
           C:\windows\system32\Lpksetup.exe /i ja-JP /f /s /p $lppath
           Set-WinHomeLocation 122
           Set-WinSystemLocale -SystemLocale ja-JP	
-          Set-WinUserLanguageList -LanguageList ja-JP,en-US -Force
+          Set-WinUserLanguageList ja-JP,en-US -Force
           Set-WinDefaultInputMethodOverride -InputTip "0411:00000411"
           Set-WinUILanguageOverride -Language ja-JP -Force
           Set-WinLanguageBarOption -UseLegacySwitchMode -UseLegacyLanguageBar
