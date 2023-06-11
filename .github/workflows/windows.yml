@@ -13,29 +13,48 @@ jobs:
       - name: Extract
         run:  Expand-Archive ngrok.zip
       - name: Auth
-        run:  .\ngrok\ngrok.exe authtoken ${{ secrets.NGROK_AUTH_TOKEN }}
+        run:  copy .\ngrok\ngrok.exe C:\Windows\System32\ngrok.exe
+        run:  ngrok.exe authtoken ${{ secrets.NGROK_AUTH_TOKEN }}
       - name: Enable TS
         run:  |
           Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -name "fDenyTSConnections" -Value 0
           Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
           Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -name "UserAuthentication" -Value 1
           Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "P@ssw0rd!" -Force)
+          
       - name: UserSetting
         run:  | 
           tzutil.exe /s "Tokyo Standard Time"
           Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -name "HideFileExt" -Value 0
           Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -name "Hidden" -Value 1
-          Set-WinHomeLocation 122
-          Set-WinSystemLocale -SystemLocale ja-JP	
-          Set-WinUserLanguageList ja-JP -Force
-          Set-WinUILanguageOverride -Language ja-JP
-      
-      - name: Experience
-        run: |
           Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name 'AutoAdminLogon' -Value '1'
           Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name 'DefaultUserName' -Value 'runneradmin'
           Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name 'DefaultPassword' -Value 'P@ssw0rd!'
           Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon' -Name 'AutoLogonCount' -Value '1'
+
+      - name: StartUpSetting(CreateTunnel)
+        run:  |
+          'Start-Process -FilePath ngrok.exe -ArgumentList "tcp","--region","jp","3389"' | Out-File "C:\Users\runneradmin\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\CreateTunnel.ps1"
+          'PowerShell CreateTunnel.bat' | Out-File "C:\Users\runneradmin\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\RUN.bat"
+      
+      - name: LanguageSetting
+        run:  |
+          Invoke-WebRequest -Uri https://software-download.microsoft.com/download/pr/17763.1.180914-1434.rs5_release_SERVERLANGPACKDVD_OEM_MULTI.iso -OutFile C:\lang.iso
+          $mountResult = Mount-DiskImage C:\lang.iso -PassThru
+          $driveLetter = ($mountResult | Get-Volume).DriveLetter
+          $lppath = $driveLetter + ":\x64\langpacks\Microsoft-Windows-Server-Language-Pack_x64_ja-jp.cab"
+          C:\windows\system32\Lpksetup.exe /i ja-JP /f /s /p $lppath
+          Set-WinHomeLocation 122
+          Set-WinSystemLocale -SystemLocale ja-JP	
+          Set-WinUserLanguageList -LanguageList ja-JP,en-US -Force
+          Set-WinDefaultInputMethodOverride -InputTip "0411:00000411"
+          Set-WinUILanguageOverride -Language ja-JP -Force
+          Set-WinLanguageBarOption -UseLegacySwitchMode -UseLegacyLanguageBar
+          Restert-Computer -Force
+      
+      - name: Experience
+        run: |
+
         # echo 'ngrok tcp --region jp 3389' | Out-File -FilePath $env:APPDATA\Microsoft\Windows\Start Menu\Programs\Startup\ngrok_startup.bat -Encoding ASCII
         # Set-RDWebClientAccess -ClientAuthenticationMethod Basic -AllowWebContentCaching $true
         # Install-WindowsFeature Remote-Desktop-Services,RDS-Web-Access,RDS-RD-Server,RDS-Connection-Broker,RDS-Licensing -IncludeManagementTools
@@ -43,6 +62,4 @@ jobs:
         # Install-RDWebClientPackage
       - name: Create Tunnel
         run:  |
-          Start-Process -FilePath .\ngrok\ngrok.exe -ArgumentList "tcp","--region","jp","3389" | Out-File test.txt
-          type test.txt
           ping 127.0.0.1 /t
