@@ -27,6 +27,7 @@ jobs:
           Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -name "Hidden" -Value 1
           Set-WinHomeLocation 122
           Set-WinSystemLocale -SystemLocale ja-JP	
+          Set-WinUserLanguageList ja-JP -Force
           Set-WinUILanguageOverride -Language ja-JP
       
       - name: Experience
