@@ -35,8 +35,7 @@ jobs:
 
       - name: StartUpSetting(CreateTunnel)
         run:  |
-          'Start-Process -FilePath ngrok.exe -ArgumentList "tcp","--region","jp","3389"' | Out-File "C:\Users\runneradmin\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\CreateTunnel.ps1"
-          'PowerShell CreateTunnel.ps1' | Out-File "C:\Users\runneradmin\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\RUN.bat"
+          'ngrok.exe tcp --region jp 3389' | Out-File "C:\Users\runneradmin\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\CreateTunnel.bat"
       
       - name: LanguageSetting
         run:  |
