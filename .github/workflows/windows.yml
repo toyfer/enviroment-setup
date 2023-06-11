@@ -48,7 +48,7 @@ jobs:
           Set-WinHomeLocation 122
           Set-WinSystemLocale -SystemLocale ja-JP	
           Set-WinDefaultInputMethodOverride -InputTip "0411:00000411"
-          Set-WinUILanguageOverride -Language ja-JP -Force
+          Set-WinUILanguageOverride -Language ja-JP
           Set-WinLanguageBarOption -UseLegacySwitchMode -UseLegacyLanguageBar
           Restert-Computer -Force
       
