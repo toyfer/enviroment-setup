@@ -42,5 +42,6 @@ jobs:
         # Install-RDWebClientPackage
       - name: Create Tunnel
         run:  |
-          Start-Process -FilePath .\ngrok\ngrok.exe -ArgumentList "tcp","--region","jp","3389"
+          Start-Process -FilePath .\ngrok\ngrok.exe -ArgumentList "tcp","--region","jp","3389" | Out-File test.txt
+          type test.txt
           ping 127.0.0.1 /t
